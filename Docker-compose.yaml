@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  bot:
+    container_name: telegram-bot
+    build:
+      context: ./TeleBot
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8081
+    depends_on:
+      - membase
+    environment:
+      BD-URL: mongodb://membase/membase
+    volumes:
+      - memvol:/data/
+
+  rest:
+    container_name: rest_contollers
+    build:
+      context: ./restbot
+      dockerfile: Dockerfile
+    ports:
+      - 8082:8082
+    depends_on:
+      - membase
+    environment:
+      BD-URL: mongodb://membase/membase
+  #  volumes:
+ #     - memvol:/data/
+
+
+  membase:
+    image: mongo
+    container_name: membase
+    hostname: membase
+    ports:
+      - 27017:27017
+
+volumes:
+  memvol:
